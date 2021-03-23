@@ -1,4 +1,4 @@
-FROM node:current-alpine
+FROM node:current
 WORKDIR /src
 COPY ./src .
 COPY ./*.json .
