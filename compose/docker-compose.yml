@@ -1,0 +1,10 @@
+version: '2.1'
+
+services:
+  quote_renderer:
+    image: ghcr.io/kc1r74p/quote_renderer:latest
+    container_name: quoteRenderer
+    restart: always 
+    ports:
+      - ${NODE_PORT}:${NODE_PORT}
+
