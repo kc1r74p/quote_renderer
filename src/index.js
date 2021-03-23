@@ -89,7 +89,7 @@ async function renderQuote(ctx, w, h) {
         rect: {
             x: 50,
             y: 5,
-            width: w/3,
+            width: w / 3,
             height: 20
         },
         font: 'Arial',
@@ -103,7 +103,7 @@ async function renderQuote(ctx, w, h) {
         rect: {
             x: w - 60,
             y: 5,
-            width: w/3,
+            width: w / 3,
             height: 20
         },
         font: 'Arial',
@@ -112,7 +112,7 @@ async function renderQuote(ctx, w, h) {
         minFontSize: 10,
         maxFontSize: 12
     });
-    
+
     drawMultilineText(ctx, q.text, {
         rect: {
             x: w / 2,
@@ -143,6 +143,7 @@ async function renderQuote(ctx, w, h) {
 
 }
 
+// https://stackoverflow.com/questions/6756975/draw-multi-line-text-to-canvas
 function drawMultilineText(ctx, text, opts) {
 
     // Default options
@@ -176,9 +177,6 @@ function drawMultilineText(ctx, text, opts) {
     if (opts.verbose) opts.logFunction('Text contains ' + words.length + ' words')
     var lines = []
     let y;  //New Line
-
-    // Finds max font size  which can be used to print whole text in opts.rec
-
 
     let lastFittingLines;                       // declaring 4 new variables (addressing issue 3)
     let lastFittingFont;
@@ -247,29 +245,6 @@ function drawMultilineText(ctx, text, opts) {
     return fontSize
 }
 
-// renderSchedule(ctx, width, height);
-
-async function renderAll() {
-    const canvas = createCanvas(width, height);
-    const ctx = canvas.getContext('2d');
-
-
-    await renderQuote(ctx, width, height);
-
-    console.log('saving out ...');
-    const out = fs.createWriteStream('out.png');
-    canvas.createPNGStream().pipe(out);
-
-    if (os.endianness() !== 'LE') {
-        console.log('ERROR: canvas.toBuffer will use different byte order. FIXME :P ');
-        return;
-    }
-
-    var b = writeBMP24(canvas.toBuffer('raw'), width, height);
-    fs.writeFileSync('out.bmp', b);
-
-}
-
 http.createServer(async function (request, response) {
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext('2d');
@@ -290,5 +265,4 @@ http.createServer(async function (request, response) {
     response.write(b, () => {
         response.end();
     });
-})
-    .listen(2000);
+}).listen(process.env.NODE_PORT || 2000);
