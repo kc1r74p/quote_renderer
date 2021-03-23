@@ -85,7 +85,7 @@ async function renderQuote(ctx, w, h) {
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle';
 
-    drawMultilineText(ctx, new Date().toLocaleDateString(), {
+    drawMultilineText(ctx, new Date().toLocaleDateString('de-DE'), {
         rect: {
             x: 50,
             y: 5,
@@ -99,7 +99,7 @@ async function renderQuote(ctx, w, h) {
         maxFontSize: 20
     });
 
-    drawMultilineText(ctx, 'Fetched at: ' + new Date().toLocaleTimeString(), {
+    drawMultilineText(ctx, 'Fetched at: ' + new Date().toLocaleTimeString('de-DE'), {
         rect: {
             x: w - 60,
             y: 5,
