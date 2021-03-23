@@ -14,16 +14,13 @@ on:
 
 jobs:
   Build_App_and_Push_Image:
-    runs-on: [linux]
+    runs-on: [ubuntu-latest]
     steps:
       - 
         name: Fetch
         uses: actions/checkout@v1
         with:
           fetch-depth: 1
-      -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
       -
         name: Login to GitHub Container Registry
         uses: docker/login-action@v1
