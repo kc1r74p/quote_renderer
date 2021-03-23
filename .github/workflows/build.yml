@@ -14,7 +14,7 @@ on:
 
 jobs:
   Build_App_and_Push_Image:
-    runs-on: [linux]
+    runs-on: [ubuntu-latest]
     steps:
       - 
         name: Fetch
