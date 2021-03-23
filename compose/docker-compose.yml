@@ -6,5 +6,5 @@ services:
     container_name: quoteRenderer
     restart: always 
     ports:
-      - ${NODE_PORT}:${NODE_PORT}
+      - 2000:2000
 
