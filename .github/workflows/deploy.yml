@@ -1,0 +1,46 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Manual run'  
+
+jobs:
+  Deploy:
+    runs-on: [ubuntu-latest]
+    steps:
+      - 
+        name: Fetch
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - 
+          name: Docker login to GHCR
+          uses: appleboy/ssh-action@master
+          with:
+            host: 192.168.178.56
+            username: docker_runner
+            key: ${{ secrets.DOCKER_HOST_PRIV_KEY }}
+            script: echo ${{ secrets.CR_PAT }} | docker login ghcr.io --username ${{ github.repository_owner }} --password-stdin
+      - 
+          name: Docker force fetch App image
+          uses: appleboy/ssh-action@master
+          with:
+            host: 192.168.178.56
+            username: docker_runner
+            key: ${{ secrets.DOCKER_HOST_PRIV_KEY }}
+            script: docker pull ghcr.io/kc1r74p/quote_renderer:latest
+      -
+        name: Deploy Image to Docker Host
+        uses: wshihadeh/docker-deployment-action@v1
+        with:
+          remote_docker_host: docker_runner@192.168.178.56
+          ssh_private_key: ${{ secrets.DOCKER_HOST_PRIV_KEY }}
+          ssh_public_key: ${{ secrets.DOCKER_HOST_PUB_KEY }}
+          args: up -d
+          stack_file_name: compose/docker-compose.yml
+          copy_stack_file: true
+          deploy_path: /home/docker_runner/quote_renderer
+          keep_files: 3
+
