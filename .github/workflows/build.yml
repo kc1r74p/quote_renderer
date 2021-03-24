@@ -50,4 +50,4 @@ jobs:
           package-name: 'quote_renderer'
           package-type: 'container'
           ignore-tag: 'latest'
-          token: ${{ secrets.CR_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
