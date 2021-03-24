@@ -16,21 +16,21 @@ jobs:
         with:
           fetch-depth: 1
       - 
-          name: Docker login to GHCR
-          uses: appleboy/ssh-action@master
-          with:
-            host: 192.168.178.56
-            username: docker_runner
-            key: ${{ secrets.DOCKER_HOST_PRIV_KEY }}
-            script: echo ${{ secrets.CR_PAT }} | docker login ghcr.io --username ${{ github.repository_owner }} --password-stdin
+        name: Docker login to GHCR
+        uses: appleboy/ssh-action@master
+        with:
+          host: 192.168.178.56
+          username: docker_runner
+          key: ${{ secrets.DOCKER_HOST_PRIV_KEY }}
+          script: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io --username ${{ github.repository_owner }} --password-stdin
       - 
-          name: Docker force fetch App image
-          uses: appleboy/ssh-action@master
-          with:
-            host: 192.168.178.56
-            username: docker_runner
-            key: ${{ secrets.DOCKER_HOST_PRIV_KEY }}
-            script: docker pull ghcr.io/kc1r74p/quote_renderer:latest
+        name: Docker force fetch App image
+        uses: appleboy/ssh-action@master
+        with:
+          host: 192.168.178.56
+          username: docker_runner
+          key: ${{ secrets.DOCKER_HOST_PRIV_KEY }}
+          script: docker pull ghcr.io/kc1r74p/quote_renderer:latest
       -
         name: Deploy Image to Docker Host
         uses: wshihadeh/docker-deployment-action@v1
