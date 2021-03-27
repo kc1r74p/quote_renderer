@@ -1,8 +1,7 @@
 const { createCanvas } = require('canvas');
-var fs = require('fs');
 const os = require('os');
-const request = require('request');
 const http = require('http');
+const fetch = require('node-fetch');
 
 var width = 600;
 var height = 448;
@@ -54,33 +53,54 @@ function writeBMP24(buffer, width, height) {
     return tempBuffer;
 }
 
-function doRequest(url) {
-    let options = { json: true };
-    return new Promise(function (resolve, reject) {
-        request(url, options, function (error, res, body) {
-            if (!error && res.statusCode == 200) {
-                resolve(body);
-            } else {
-                reject(error);
-            }
-        });
-    });
-}
-
 async function renderQuote(ctx, w, h) {
     // background
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, w, h);
 
-    // start
-    var x = 20;
-    var y = 20;
-
     let url = "https://type.fit/api/quotes";
-    var body = await doRequest(url);
+    var body = await fetch(url).then(res => res.json());
     var q = body[Math.floor(Math.random() * body.length)];
-    //console.log(q);
 
+    if(!q || !q.text || !q.author){
+        return;
+    }
+
+    ctx.fillStyle = 'black';
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle';
+
+    drawMultilineText(ctx, q.text, {
+        rect: {
+            x: w / 2,
+            y: 0,
+            width: w,
+            height: h
+        },
+        font: 'Arial',
+        verbose: false,
+        lineHeight: 1,
+        minFontSize: 24,
+        maxFontSize: 50
+    });
+
+    drawMultilineText(ctx, q.author, {
+        rect: {
+            x: w / 2,
+            y: h - 50,
+            width: w,
+            height: 50
+        },
+        font: 'Arial',
+        verbose: false,
+        lineHeight: 1,
+        minFontSize: 15,
+        maxFontSize: 30
+    });
+
+}
+
+function drawDateTimeInfo(ctx, w, h) {
     ctx.fillStyle = 'black';
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle';
@@ -116,35 +136,27 @@ async function renderQuote(ctx, w, h) {
         minFontSize: 10,
         maxFontSize: 12
     });
+}
 
-    drawMultilineText(ctx, q.text, {
+
+function drawBatteryInfo(ctx, w, h, percentage) {
+    ctx.fillStyle = 'black';
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle';
+
+    drawMultilineText(ctx, 'Battery at: ' + percentage + '%', {
         rect: {
-            x: w / 2,
-            y: 0,
-            width: w,
-            height: h
+            x: w - 70,
+            y: h - 30,
+            width: w / 3,
+            height: 20
         },
         font: 'Arial',
         verbose: false,
         lineHeight: 1,
-        minFontSize: 24,
-        maxFontSize: 50
+        minFontSize: 14,
+        maxFontSize: 16
     });
-
-    drawMultilineText(ctx, q.author, {
-        rect: {
-            x: w / 2,
-            y: h - 50,
-            width: w,
-            height: 50
-        },
-        font: 'Arial',
-        verbose: false,
-        lineHeight: 1,
-        minFontSize: 15,
-        maxFontSize: 30
-    });
-
 }
 
 // https://stackoverflow.com/questions/6756975/draw-multi-line-text-to-canvas
@@ -250,9 +262,30 @@ function drawMultilineText(ctx, text, opts) {
 }
 
 http.createServer(async function (request, response) {
+
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext('2d');
     await renderQuote(ctx, width, height);
+    drawDateTimeInfo(ctx, width, height);
+
+    // Additional data ?
+    if (request.url.includes('askClientForData')) {
+
+        var client_ip = request.headers['x-forwarded-for'] ||
+            request.connection.remoteAddress ||
+            request.socket.remoteAddress ||
+            (request.connection.socket ? request.connection.socket.remoteAddress : null);
+
+        client_ip = client_ip.split(':').slice(-1).pop();
+
+        // query client address for data which we will render for it
+        var body = await fetch('http://' + client_ip + '/perc')
+            .catch(res => {})
+            .then(res => res?.json());
+
+        var batPercentage = body?.return_value || 0;
+        drawBatteryInfo(ctx, width, height, batPercentage);
+    }
 
     if (os.endianness() !== 'LE') {
         console.log('ERROR: canvas.toBuffer will use different byte order. FIXME :P ');
