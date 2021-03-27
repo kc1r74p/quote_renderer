@@ -269,21 +269,8 @@ http.createServer(async function (request, response) {
     drawDateTimeInfo(ctx, width, height);
 
     // Additional data ?
-    if (request.url.includes('askClientForData')) {
-
-        var client_ip = request.headers['x-forwarded-for'] ||
-            request.connection.remoteAddress ||
-            request.socket.remoteAddress ||
-            (request.connection.socket ? request.connection.socket.remoteAddress : null);
-
-        client_ip = client_ip.split(':').slice(-1).pop();
-
-        // query client address for data which we will render for it
-        var body = await fetch('http://' + client_ip + '/perc')
-            .catch(res => {})
-            .then(res => res?.json());
-
-        var batPercentage = body?.return_value || 0;
+    if (request.url.includes('battery')) {
+        var batPercentage = request.url.split('battery=').slice(-1).pop() || 0;
         drawBatteryInfo(ctx, width, height, batPercentage);
     }
 
