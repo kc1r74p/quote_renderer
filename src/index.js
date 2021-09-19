@@ -62,8 +62,12 @@ async function renderQuote(ctx, w, h) {
     var body = await fetch(url).then(res => res.json());
     var q = body[Math.floor(Math.random() * body.length)];
 
-    if(!q || !q.text || !q.author){
+    if(!q || !q.text){
         return;
+    }
+
+    if(!q.author){
+        q.author = '-';
     }
 
     ctx.fillStyle = 'black';
