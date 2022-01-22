@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "canvas": "^2.8.0",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.1.1",
     "request": "^2.88.2",
     "words-array": "^1.0.1"
   }
