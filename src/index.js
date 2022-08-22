@@ -62,19 +62,19 @@ async function renderQuote(ctx, w, h) {
     let url = "https://api.quotable.io/random";
     var body = await fetch(url).then(res => res.json());
 
-    if(!q || !q.content){
+    if(!body || !body.content){
         return;
     }
 
-    if(!q.author){
-        q.author = '-';
+    if(!body.author){
+        body.author = '-';
     }
 
     ctx.fillStyle = 'black';
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle';
 
-    drawMultilineText(ctx, q.content, {
+    drawMultilineText(ctx, body.content, {
         rect: {
             x: w / 2,
             y: 0,
@@ -88,7 +88,7 @@ async function renderQuote(ctx, w, h) {
         maxFontSize: 50
     });
 
-    drawMultilineText(ctx, q.author, {
+    drawMultilineText(ctx, body.author, {
         rect: {
             x: w / 2,
             y: h - 50,
