@@ -1,4 +1,4 @@
-FROM node:current
+FROM node:16
 LABEL org.opencontainers.image.source="https://github.com/kc1r74p/quote_renderer"
 WORKDIR /src
 COPY ./src .
