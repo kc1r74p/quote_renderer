@@ -58,11 +58,11 @@ async function renderQuote(ctx, w, h) {
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, w, h);
 
-    let url = "https://type.fit/api/quotes";
+    // https://github.com/lukePeavey/quotable
+    let url = "https://api.quotable.io/random";
     var body = await fetch(url).then(res => res.json());
-    var q = body[Math.floor(Math.random() * body.length)];
 
-    if(!q || !q.text){
+    if(!q || !q.content){
         return;
     }
 
@@ -74,7 +74,7 @@ async function renderQuote(ctx, w, h) {
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle';
 
-    drawMultilineText(ctx, q.text, {
+    drawMultilineText(ctx, q.content, {
         rect: {
             x: w / 2,
             y: 0,
