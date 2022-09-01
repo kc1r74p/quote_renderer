@@ -58,23 +58,22 @@ async function renderQuote(ctx, w, h) {
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, w, h);
 
-    // https://github.com/lukePeavey/quotable
-    let url = "https://api.quotable.io/random";
+    let url = "https://zenquotes.io/api/quotes";
     var body = await fetch(url).then(res => res.json());
 
-    if(!body || !body.content){
+    if(!body || !body[0].q){
         return;
     }
 
-    if(!body.author){
-        body.author = '-';
+    if(!body[0].a){
+        body[0].a = '-';
     }
 
     ctx.fillStyle = 'black';
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle';
 
-    drawMultilineText(ctx, body.content, {
+    drawMultilineText(ctx, body[0].q, {
         rect: {
             x: w / 2,
             y: 0,
@@ -88,7 +87,7 @@ async function renderQuote(ctx, w, h) {
         maxFontSize: 50
     });
 
-    drawMultilineText(ctx, body.author, {
+    drawMultilineText(ctx, body[0].a, {
         rect: {
             x: w / 2,
             y: h - 50,
