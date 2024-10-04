@@ -61,11 +61,11 @@ async function renderQuote(ctx, w, h) {
     let url = "https://zenquotes.io/api/quotes";
     var body = await fetch(url).then(res => res.json());
 
-    if(!body || !body[0].q){
+    if (!body || !body[0].q) {
         return;
     }
 
-    if(!body[0].a){
+    if (!body[0].a) {
         body[0].a = '-';
     }
 
@@ -108,9 +108,10 @@ function drawDateTimeInfo(ctx, w, h) {
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle';
 
-    drawMultilineText(ctx, new Date().toLocaleDateString('de-DE', {
-        timeZone: 'Europe/Berlin'
-    }), {
+    const dateStr = new Intl.DateTimeFormat('de-DE', { dateStyle: 'medium' }).format(new Date());
+    const timeStr = new Intl.DateTimeFormat('de-DE', { timeStyle: 'medium' }).format(new Date());
+
+    drawMultilineText(ctx, dateStr, {
         rect: {
             x: 55,
             y: 5,
@@ -124,9 +125,7 @@ function drawDateTimeInfo(ctx, w, h) {
         maxFontSize: 20
     });
 
-    drawMultilineText(ctx, 'Fetched at: ' + new Date().toLocaleTimeString('de-DE', {
-        timeZone: 'Europe/Berlin'
-    }), {
+    drawMultilineText(ctx, 'Fetched at: ' + timeStr, {
         rect: {
             x: w - 70,
             y: 5,
@@ -141,15 +140,14 @@ function drawDateTimeInfo(ctx, w, h) {
     });
 }
 
-
 function drawBatteryInfo(ctx, w, h, percentage) {
     ctx.fillStyle = 'black';
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle';
 
-    drawMultilineText(ctx, 'Battery at: ' + percentage + '%', {
+    drawMultilineText(ctx, percentage + '%', {
         rect: {
-            x: w - 70,
+            x: w - 30,
             y: h - 30,
             width: w / 3,
             height: 20
