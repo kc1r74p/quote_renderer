@@ -1,7 +1,6 @@
 const { createCanvas } = require('canvas');
 const os = require('os');
 const http = require('http');
-const fetch = require('node-fetch');
 
 var width = 600;
 var height = 448;
