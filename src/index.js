@@ -64,15 +64,17 @@ async function renderQuote(ctx, w, h) {
         return;
     }
 
-    if (!body[0].a) {
-        body[0].a = '-';
+    const idx = Math.floor(Math.random() * body.length);
+
+    if (!body[idx].a) {
+        body[idx].a = '-';
     }
 
     ctx.fillStyle = 'black';
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle';
 
-    drawMultilineText(ctx, body[0].q, {
+    drawMultilineText(ctx, body[idx].q, {
         rect: {
             x: w / 2,
             y: 0,
@@ -86,7 +88,7 @@ async function renderQuote(ctx, w, h) {
         maxFontSize: 50
     });
 
-    drawMultilineText(ctx, body[0].a, {
+    drawMultilineText(ctx, body[idx].a, {
         rect: {
             x: w / 2,
             y: h - 50,
